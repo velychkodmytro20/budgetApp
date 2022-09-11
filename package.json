@@ -1,0 +1,9 @@
+{
+  "name": "budgetapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Dmytro Velychko <dima.velychko@casafari.com>",
+  "license": "MIT",
+  "packageManager": "yarn@3.2.3",
+  "dependencies": {}
+}

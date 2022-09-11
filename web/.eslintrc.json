@@ -1,0 +1,80 @@
+// {
+//   "env": {
+//     "browser": true,
+//     "es2022": true
+//   },
+//   "extends": [
+//     "eslint:recommended",
+//     //"plugin:react/recommended",
+//     "plugin:@typescript-eslint/eslint-recommended",
+//     "plugin:@typescript-eslint/recommended",
+//     "prettier",
+//     "prettier/@typescript-eslint"
+//   ],
+//   "overrides": [
+//     {
+//       "files": ["*.mts", "*.cts", "*.tsx"],
+//       "rules": {
+//         "@typescript-eslint/explicit-function-return-type": "off"
+//       }
+//     }
+//   ],
+//   "parser": "@typescript-eslint/parser",
+//   "parserOptions": {
+//     "ecmaVersion": "latest",
+//     "sourceType": "module",
+//     "ecmaFeatures": {
+//       "jsx": true
+//     }
+//   },
+//   "plugins": [
+//     "react",
+//     "react-hooks",
+//     "@typescript-eslint",
+//     "prettier",
+//     // "@typescript-eslint/recommended",
+//     "import"
+//   ],
+//   "rules": {
+//     //standart scope of rules
+//     "react/react-in-jsx-scope": "off",
+//     "camelcase": "error",
+//     "spaced-comment": "error",
+//     "quotes": ["error", "single"],
+//     "no-duplicate-imports": "error",
+//     //
+
+//     "no-use-before-define": "off",
+//     "@typescript-eslint/no-use-before-define": ["error"],
+//     "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
+//     "no-shadow": "off",
+//     "@typescript-eslint/no-shadow": ["error"],
+//     "max-len": ["warn", { "code": 100 }],
+
+//     //check if it ok for me and delete if needed
+//     "import/prefer-default-export": "off",
+//     "react/prop-types": "off",
+
+//     "react-hooks/rules-of-hooks": "error",
+//     "react-hooks/exhaustive-deps": "warn",
+
+//     "@typescript-eslint/explicit-function-return-type": [
+//       "error",
+//       { "allowExpressions": true }
+//     ],
+
+//     "import/extensions": [
+//       "error",
+//       "ignorePackages",
+//       { "ts": "never", "tsx": "never" }
+//     ]
+//   },
+//   "settings": {
+//     "import/resolver": {
+//       // "webpack": {
+//       //   "config": "webpack.config.js"
+//       // },
+//       "typescript": {}
+//     }
+//   }
+// }

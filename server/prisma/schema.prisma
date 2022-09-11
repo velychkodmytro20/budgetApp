@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "postgresql://dima:1234321@localhost:5432/dima?schema=public"
+ // url      = env("DATABASE_URL")
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Type {
+  INCOME
+  OUTCOME
+}
+
+enum Category {
+  CLOTHES
+  FOOD
+  MEDICINE
+  RESTAURANTS
+  SPORT
+  TAXI
+  TRANSFERS
+  UTILITIES  
+}
+
+model User {
+  id   String @id @default(uuid()) @unique 
+  firstName String 
+  lastName String 
+  password String
+  email String  @unique
+  phone String?  @unique
+  status Status @default(ACTIVE)
+  role    Role     @default(USER)
+  lastLoginAt DateTime?  @db.Date
+  createdAT DateTime? @db.Date @default(now())
+  updatedAt DateTime?  @db.Date
+
+  budgetRecord BudgetRecord[] 
+  
+}
+
+model BudgetRecord {
+  id String @id @default(uuid()) @unique
+  type Type
+  category Category
+  amount Int
+  user User @relation(fields: [userId], references: [id])
+  userId String  @default(uuid())
+  
+}
+
