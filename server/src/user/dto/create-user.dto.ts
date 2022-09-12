@@ -1,9 +1,23 @@
 export interface CreateUserDto {
-  email: string
-  password: string
+  id?: string
   firstName: string
   lastName: string
-  phone: string
-  status: string
-  role: string
+  password: string
+  email: string
+  phone?: string | null
+  status?: Status
+  role?: Role
+  lastLoginAt?: Date | string | null
+  createdAT?: Date | string | null
+  updatedAt?: Date | string | null
+  //   budgetRecord?: BudgetRecordCreateNestedManyWithoutUserInput
+}
+
+enum Status {
+  active,
+  inactive,
+}
+enum Role {
+  user,
+  admin,
 }

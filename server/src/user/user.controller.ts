@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common'
 import { UserService } from './user.service'
 import { Prisma } from '@prisma/client'
+import { CreateUserDto } from './dto/create-user.dto'
 
 @Controller('user')
 export class UserController {
@@ -21,8 +22,8 @@ export class UserController {
   }
 
   @Get('/users')
-  findAll(@Query() data: Prisma.UserWhereInput) {
-    return this.userService.findAll(data)
+  findAll(@Query() userWhereInput: Prisma.UserWhereInput) {
+    return this.userService.findAll(userWhereInput)
   }
 
   @Get(':id')
