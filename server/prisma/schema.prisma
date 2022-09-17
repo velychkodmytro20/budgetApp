@@ -12,29 +12,29 @@ datasource db {
 }
 
 enum Status {
-  ACTIVE
-  INACTIVE
+  active
+  inactive
 }
 
 enum Role {
-  ADMIN
-  USER
+  admin
+  user
 }
 
 enum Type {
-  INCOME
-  OUTCOME
+  income
+  outcome
 }
 
 enum Category {
-  CLOTHES
-  FOOD
-  MEDICINE
-  RESTAURANTS
-  SPORT
-  TAXI
-  TRANSFERS
-  UTILITIES  
+  clothes
+  food
+  medicine
+  restaurants
+  sport
+  taxi
+  transfers
+  utilities  
 }
 
 model User {
@@ -44,11 +44,11 @@ model User {
   password String
   email String  @unique
   phone String?  @unique
-  status Status @default(ACTIVE)
-  role    Role     @default(USER)
-  lastLoginAt DateTime?  @db.Date
+  status Status @default(active)
+  role    Role     @default(user)
+  lastLoginAt DateTime?  @db.Date @default(now())
   createdAT DateTime? @db.Date @default(now())
-  updatedAt DateTime?  @db.Date
+  updatedAt DateTime?  @db.Date @default(now())
 
   budgetRecord BudgetRecord[] 
   

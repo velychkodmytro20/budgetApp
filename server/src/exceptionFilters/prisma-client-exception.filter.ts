@@ -1,6 +1,4 @@
-/* eslint-disable no-case-declarations */
-//src/prisma-client-exception.filter.ts
-import { ArgumentsHost, Catch, HttpStatus } from '@nestjs/common'
+import { ArgumentsHost, Catch, HttpStatus, Logger } from '@nestjs/common'
 import { BaseExceptionFilter } from '@nestjs/core'
 import { Prisma } from '@prisma/client'
 import { Response } from 'express'
@@ -36,21 +34,34 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     }
   }
 
-  makeCustomException(
+  public makeCustomException(
     exception: Prisma.PrismaClientKnownRequestError,
     host: ArgumentsHost,
     httpStatus: HttpStatus,
   ): Record<string, any> {
     const ctx = host.switchToHttp()
+    const request = ctx.getRequest()
     const response = ctx.getResponse<Response>()
+    const logger = new Logger()
 
+    const prismaCode = exception.code
     const status = httpStatus
     const message = exception.message.replace(/\n/g, '')
 
-    return response.status(status).json({
+    const devErrorResponse = {
       statusCode: status,
       message,
+      path: request.url,
+      method: request.method,
+      errorName: exception?.name,
+      prismaCode,
       timestamp: new Date().toISOString(),
-    })
+    }
+
+    logger.log(
+      `request method: ${request.method} request url${request.url}`,
+      JSON.stringify(devErrorResponse),
+    )
+    return response.status(status).json(devErrorResponse)
   }
 }

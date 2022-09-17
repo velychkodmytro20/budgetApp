@@ -7,37 +7,60 @@ import {
   Param,
   Delete,
   Query,
+  NotFoundException,
 } from '@nestjs/common'
 import { UserService } from './user.service'
-import { Prisma } from '@prisma/client'
-import { CreateUserDto } from './dto/create-user.dto'
-
-@Controller('user')
+import { User, Prisma } from '@prisma/client'
+@Controller('user/')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/create')
-  create(@Body() userCreateInput: Prisma.UserCreateInput) {
-    return this.userService.create(userCreateInput)
+  @Post('create')
+  async userCreate(@Body() data: Prisma.UserCreateInput): Promise<User> {
+    return this.userService.create(data)
   }
-
-  @Get('/users')
-  findAll(@Query() userWhereInput: Prisma.UserWhereInput) {
-    return this.userService.findAll(userWhereInput)
-  }
-
   @Get(':id')
-  findOne(@Param('id') where: Prisma.UserWhereUniqueInput) {
-    return this.userService.findOne(where)
+  async userfindOne(@Param('id') id: string): Promise<User> {
+    try {
+      return this.userService.findOne({ id })
+    } catch (error) {
+      throw new NotFoundException({ error })
+    }
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(+id, updateUserDto)
-  // }
+  @Get('all')
+  async userFindManyByCriterias(
+    @Query() searchQuery: Prisma.UserWhereInput,
+  ): Promise<User[]> {
+    return this.userService.findMany(searchQuery)
+  }
 
-  // @Delete(':id')
-  // async remove(@Param('id') data: string): Promise<boolean> {
-  //   return this.userService.remove(data)
-  // }
+  @Patch('update/:id')
+  async userUpdate(
+    @Body() data: Prisma.UserCreateInput,
+    @Param('id') id: string,
+  ): Promise<User> {
+    try {
+      return this.userService.update({ data, id })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Patch(':id')
+  async userUpdateMany(
+    @Body() data: Prisma.UserCreateInput,
+    @Query() searchQuery: Prisma.UserWhereUniqueInput,
+  ): Promise<Prisma.BatchPayload> {
+    try {
+      return this.userService.updateMany({ data, searchQuery })
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  @Delete(':id')
+  async userRemove(@Param('id') id: string): Promise<User> {
+    return this.userService.remove(id)
+  }
 }
