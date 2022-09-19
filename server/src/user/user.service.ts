@@ -12,19 +12,15 @@ export class UserService {
   }
 
   async findMany(searchQuery: Prisma.UserWhereInput): Promise<User[]> {
-    try {
-      return this.prisma.user.findMany({
-        where: {
-          ...searchQuery,
-        },
-      })
-    } catch (error) {
-      throw new HttpException(error, error.statusCode)
-    }
+    return this.prisma.user.findMany({
+      where: {
+        ...searchQuery,
+      },
+    })
   }
 
   async findOne(id: Prisma.UserWhereUniqueInput): Promise<User | null> {
-    return this.prisma.user.findUnique({
+    return this.prisma.user.findFirstOrThrow({
       where: id,
     })
   }
@@ -47,28 +43,18 @@ export class UserService {
     searchQuery: Prisma.UserWhereInput
   }): Promise<Prisma.BatchPayload> {
     const { data, searchQuery } = params
-    try {
-      const usersUpdatedCount = await this.prisma.user.updateMany({
-        where: {
-          ...searchQuery,
-        },
-        data,
-      })
 
-      return usersUpdatedCount
-    } catch (error) {
-      // throw new HttpException(error.message, error.status)
-      throw new Error(error)
-    }
+    return this.prisma.user.updateMany({
+      where: {
+        ...searchQuery,
+      },
+      data,
+    })
   }
 
   async remove(id: string): Promise<User> {
-    try {
-      return this.prisma.user.delete({
-        where: { id },
-      })
-    } catch (error) {
-      throw new HttpException(error.status, error)
-    }
+    return this.prisma.user.delete({
+      where: { id },
+    })
   }
 }

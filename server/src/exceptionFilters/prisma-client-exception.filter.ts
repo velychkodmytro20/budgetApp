@@ -12,6 +12,11 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 
         break
 
+      case 'P2025':
+        this.makeCustomException(exception, host, HttpStatus.NOT_FOUND)
+
+        break
+
       case 'P2002':
         this.makeCustomException(exception, host, HttpStatus.CONFLICT)
 
@@ -38,7 +43,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     exception: Prisma.PrismaClientKnownRequestError,
     host: ArgumentsHost,
     httpStatus: HttpStatus,
-  ): Record<string, any> {
+  ): void {
     const ctx = host.switchToHttp()
     const request = ctx.getRequest()
     const response = ctx.getResponse<Response>()
@@ -62,6 +67,6 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
       `request method: ${request.method} request url${request.url}`,
       JSON.stringify(devErrorResponse),
     )
-    return response.status(status).json(devErrorResponse)
+    response.status(status).json(devErrorResponse)
   }
 }
