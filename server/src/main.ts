@@ -4,12 +4,13 @@ import { AppModule } from './app.module'
 import { PrismaClientExceptionFilter } from './exceptionFilters/prisma-client-exception.filter'
 
 async function bootstrap() {
-  console.log('hlelo')
-  const app = await NestFactory.create(AppModule)
+    const app = await NestFactory.create(AppModule)
+    const port = process.env.PORT
 
-  const { httpAdapter } = app.get(HttpAdapterHost)
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
+    const { httpAdapter } = app.get(HttpAdapterHost)
 
-  await app.listen(3000)
+    app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
+
+    await app.listen(port)
 }
 bootstrap()
