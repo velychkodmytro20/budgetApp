@@ -7,8 +7,6 @@ import { AuthService } from './auth.service'
 import { Auth } from './entity/auth.entity'
 import { UserService } from '../user/user.service'
 
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
-
 @Controller('auth')
 export class AuthController {
     private readonly logger: Logger
