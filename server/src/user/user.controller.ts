@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt'
 import {
     Controller,
     Get,
@@ -12,15 +13,18 @@ import {
     HttpStatus,
     UseGuards,
 } from '@nestjs/common'
-import { User, Prisma } from '@prisma/client'
+import { User, Role, Prisma } from '@prisma/client'
 
-import { JwtAuthGuard } from './../auth/jwt-auth.guard'
+import { AuthService } from '../auth/auth.service'
+import { JwtAuthGuard, RoleGuard } from '../auth/guards'
+import { JwtStrategy } from '../auth/strategies'
 import { UserService } from './user.service'
-import { JwtStrategy } from '../auth/jwt.strategy'
+
 @Controller('user/')
 export class UserController {
     private readonly logger: Logger
     constructor(
+        private readonly authService: AuthService,
         private readonly userService: UserService,
         private readonly jwtStrategy: JwtStrategy,
     ) {
@@ -28,9 +32,11 @@ export class UserController {
     }
 
     @Post('create')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(RoleGuard(Role.admin))
     async userCreate(@Body() data: Prisma.UserCreateInput): Promise<User> {
         try {
+            data.password = await this.authService.hashPassword(data.password)
+
             const createdUser = await this.userService.create(data)
             this.logger.debug('User was created', createdUser)
 
@@ -42,6 +48,7 @@ export class UserController {
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     async userfindOne(@Param('id') id: string): Promise<User> {
         try {
             const user = await this.userService.findOne({ id })
@@ -55,6 +62,7 @@ export class UserController {
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
     async userFindManyByCriterias(
         @Query() searchQuery: Prisma.UserWhereInput,
     ): Promise<User[]> {
@@ -85,7 +93,7 @@ export class UserController {
     }
 
     @Put()
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(RoleGuard(Role.admin))
     async userUpdateMany(
         @Body() data: Prisma.UserCreateInput,
         @Query() searchQuery: Prisma.UserWhereUniqueInput,
@@ -104,7 +112,7 @@ export class UserController {
     }
 
     @Delete(':id')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(RoleGuard(Role.admin))
     async userRemove(@Param('id') id: string): Promise<User> {
         try {
             const deletedUser = await this.userService.remove(id)

@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt'
 import { UserService } from './user.service'
 import { UserController } from './user.controller'
 import { PrismaService } from '../prisma/prisma.service'
-import { JwtStrategy } from '../auth/jwt.strategy'
+import { JwtStrategy } from '../auth/strategies'
 import { AuthService } from '../auth/auth.service'
 
 // When you want to provide a set of providers which should be available everywhere out-of-the-box

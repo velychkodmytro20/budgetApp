@@ -1,3 +1,4 @@
+import * as cookieParser from 'cookie-parser'
 import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 
 import { AppModule } from './app.module'
@@ -10,6 +11,7 @@ async function bootstrap() {
     const { httpAdapter } = app.get(HttpAdapterHost)
 
     app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
+    app.use(cookieParser())
 
     await app.listen(port)
 }

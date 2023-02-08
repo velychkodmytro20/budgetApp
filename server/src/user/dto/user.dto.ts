@@ -1,4 +1,4 @@
-export interface CreateUserDto {
+export interface UserDto {
     id?: string
     firstName: string
     lastName: string
@@ -12,11 +12,11 @@ export interface CreateUserDto {
     updatedAt?: Date | string | null
 }
 
-enum Status {
+export enum Status {
     active,
     inactive,
 }
-enum Role {
-    user,
-    admin,
+export enum Role {
+    user = 'user',
+    admin = 'admin',
 }
