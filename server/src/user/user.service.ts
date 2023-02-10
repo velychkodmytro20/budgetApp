@@ -1,65 +1,68 @@
-import { Injectable, HttpException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
+import { User, Prisma } from '@prisma/client'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { User, Prisma } from '@prisma/client'
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
-      data,
-    })
-  }
-
-  async findAll(where: Prisma.UserWhereInput): Promise<User[]> {
-    try {
-      return this.prisma.user.findMany({
-        where,
-      })
-    } catch (error) {
-      throw new HttpException(error, error.statusCode)
+    async findAdmin(id: string): Promise<User | null> {
+        return this.prisma.user.findFirst({
+            where: {
+                id,
+                role: 'admin',
+            },
+        })
     }
-  }
+    async create(data: Prisma.UserCreateInput): Promise<User> {
+        return this.prisma.user.create({ data })
+    }
 
-  async findOne(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
-    })
-  }
+    async findMany(searchQuery: Prisma.UserWhereInput): Promise<User[]> {
+        return this.prisma.user.findMany({
+            where: {
+                ...searchQuery,
+            },
+        })
+    }
 
-  async update(params: {
-    data: Prisma.UserCreateInput
-    where: Prisma.UserWhereUniqueInput
-  }): Promise<User> {
-    const { data, where } = params
-    return this.prisma.user.update({
-      data,
-      where,
-    })
-  }
+    async findOne(id: Prisma.UserWhereUniqueInput): Promise<User | null> {
+        return this.prisma.user.findFirstOrThrow({
+            where: id,
+        })
+    }
 
-  // async updateMany(params: {
-  //   data: Prisma.UserUpdateManyArgs
-  //   where: Prisma.UserWhereInput
-  // }): Promise<User[]> {
-  //   const { data, where } = params
-  //   return this.prisma.user.updateMany({})
-  // }
+    async update(params: {
+        data: Prisma.UserCreateInput
+        id: string
+    }): Promise<User> {
+        const { data, id } = params
+        return this.prisma.user.update({
+            data,
+            where: {
+                id,
+            },
+        })
+    }
 
-  // async remove(where: Prisma.UserWhereUniqueInput): Promise<boolean> {
-  //   try {
-  //     await this.prisma.user.delete({
-  //       where,
-  //     })
-  //     return true
-  //   } catch (error) {
-  //     throw new Error(error)
-  //     return false
-  //     // throw new HttpException(error.status, error)
-  //   }
-  // }
+    async updateMany(params: {
+        data: Prisma.UserCreateInput
+        searchQuery: Prisma.UserWhereInput
+    }): Promise<Prisma.BatchPayload> {
+        const { data, searchQuery } = params
+
+        return this.prisma.user.updateMany({
+            where: {
+                ...searchQuery,
+            },
+            data,
+        })
+    }
+
+    async remove(id: string): Promise<User> {
+        return this.prisma.user.delete({
+            where: { id },
+        })
+    }
 }
