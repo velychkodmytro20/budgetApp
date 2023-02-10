@@ -26,6 +26,7 @@ module.exports = {
     },
     ignorePatterns: ['.eslintrc.js'],
     rules: {
+        complexity: ['error', 3],
         tabWith: 4,
         '@typescript-eslint/space-before-function-paren': 'off',
         '@typescript-eslint/space-before-blocks': 'error',

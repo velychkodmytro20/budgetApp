@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
-import { UserService } from './user.service'
-import { UserController } from './user.controller'
-import { PrismaService } from '../prisma/prisma.service'
-import { JwtStrategy } from '../auth/strategies'
 import { AuthService } from '../auth/auth.service'
+import { JwtStrategy } from '../auth/strategies'
+import { PrismaService } from '../prisma/prisma.service'
+import { UserController } from './user.controller'
+import { UserService } from './user.service'
 
 // When you want to provide a set of providers which should be available everywhere out-of-the-box
 // (e.g., helpers, database connections, etc.), make the module global with the @Global() decorator.
@@ -13,12 +13,12 @@ import { AuthService } from '../auth/auth.service'
 @Module({
     controllers: [UserController],
     providers: [
-        UserService,
-        JwtService,
         AuthService,
-        PrismaService,
+        JwtService,
         JwtStrategy,
+        PrismaService,
+        UserService,
     ],
-    exports: [UserService], // If we want to use our service in another module
+    exports: [UserService],
 })
 export class UserModule {}

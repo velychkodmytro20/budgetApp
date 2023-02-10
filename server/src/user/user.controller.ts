@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt'
 import {
     Controller,
     Get,
@@ -17,7 +16,6 @@ import { User, Role, Prisma } from '@prisma/client'
 
 import { AuthService } from '../auth/auth.service'
 import { JwtAuthGuard, RoleGuard } from '../auth/guards'
-import { JwtStrategy } from '../auth/strategies'
 import { UserService } from './user.service'
 
 @Controller('user/')
@@ -26,7 +24,6 @@ export class UserController {
     constructor(
         private readonly authService: AuthService,
         private readonly userService: UserService,
-        private readonly jwtStrategy: JwtStrategy,
     ) {
         this.logger = new Logger()
     }

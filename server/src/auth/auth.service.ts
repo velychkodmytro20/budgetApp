@@ -7,43 +7,50 @@ import {
     NotFoundException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { User } from '@prisma/client'
 
-import { Auth, TokenPayload } from './dto'
-import { PrismaService } from './../prisma/prisma.service'
+import { ITokenPayload } from './dto'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly configService: ConfigService,
-        private jwtService: JwtService,
-        private prisma: PrismaService,
+        private readonly jwtService: JwtService,
+        private readonly userService: UserService,
     ) {}
 
-    public getCookieWithJwtToken(userId: string) {
-        const payload: TokenPayload = { userId }
-        const token = this.jwtService.sign(payload)
+    public getCookieWithJwtToken(id: string) {
+        const payload: ITokenPayload = { id }
+        const token = this.jwtService.sign(payload, {
+            secret: this.configService.get('JWT_SECRET'),
+            expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
+        })
         return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-            'expiration',
-        )}`
+            'JWT_EXPIRATION_TIME',
+        )}s`
     }
 
     public getCookieForLogOut() {
         return `Authentication=; HttpOnly; Path=/; Max-Age=0`
     }
 
-    async login(email: string, password: string): Promise<Auth> {
-        const user = await this.prisma.user.findUnique({
-            where: { email },
-        })
+    async login(email: string, password: string): Promise<User> {
+        try {
+            const user = await this.userService.findOne({ email })
 
-        if (!user) {
-            throw new NotFoundException(`No user found for email: ${email}`)
-        }
+            if (!user) {
+                throw new NotFoundException(`No user found for email: ${email}`)
+            }
 
-        await this.verifyPassword(password, user.password)
+            await this.verifyPassword(password, user.password)
 
-        return {
-            accessToken: this.jwtService.sign({ userId: user.id }),
+            return user
+        } catch (error) {
+            throw new HttpException(
+                'Wrong credentials provided',
+                HttpStatus.BAD_REQUEST,
+            )
         }
     }
 
@@ -68,6 +75,6 @@ export class AuthService {
     }
 
     async validateUser(userId: string) {
-        return this.prisma.user.findUnique({ where: { id: userId } })
+        return this.userService.findOne({ id: userId })
     }
 }

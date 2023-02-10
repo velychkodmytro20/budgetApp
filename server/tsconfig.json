@@ -1,28 +1,28 @@
 {
-  "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node16",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2022",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
+    "compilerOptions": {
+        "module": "CommonJS",
+        "moduleResolution": "node16",
+        "declaration": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "es2022",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
 
-    // "rootDir": "./src",
-    // "paths": {
-    //   "*": ["*", "src/*"]
-    // },
-    //put type: 'module' in packege.json if you want to use module: "ES2022" in tsconfig
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+        // "rootDir": "./src",
+        // "paths": {
+        //   "*": ["*", "src/*"]
+        // },
+        //put type: 'module' in packege.json if you want to use module: "ES2022" in tsconfig
+        "incremental": true,
+        "skipLibCheck": true,
+        "strictNullChecks": false,
+        "noImplicitAny": false,
+        "strictBindCallApply": false,
+        "forceConsistentCasingInFileNames": false,
+        "noFallthroughCasesInSwitch": false
+    }
 }

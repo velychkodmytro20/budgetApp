@@ -1,8 +1,8 @@
 import { Request } from 'express'
-import { UserDto } from '../../user/dto/user.dto'
+import { User } from '@prisma/client'
 
 interface RequestWithUser extends Request {
-    user: UserDto
+    user: User
 }
 
 export { RequestWithUser }

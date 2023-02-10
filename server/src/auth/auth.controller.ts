@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt'
 import { Response } from 'express'
 import { User, Prisma } from '@prisma/client'
 
@@ -17,7 +16,7 @@ import {
 } from '@nestjs/common'
 
 import { AuthService } from './auth.service'
-import { Auth, LoginDto,RequestWithUser } from './dto'
+import { RequestWithUser } from './dto'
 import { JwtAuthGuard, JwtAuthLocalGuard } from './guards'
 import { PostgresErrorCode } from '../../database/postgresErrorCodes.enum'
 import { UserService } from '../user/user.service'
@@ -61,22 +60,19 @@ export class AuthController {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
     @HttpCode(200)
+    @UseGuards(JwtAuthLocalGuard)
     @Post('login')
-    async login(@Body() { email, password }: LoginDto): Promise<Auth> {
+    login(
+        @Req() request: RequestWithUser,
+        @Res({ passthrough: true }) response: Response,
+    ): User {
         try {
-            //todo: uncomment in scope of cookies login
-             // async login(
-            // @Req() request: RequestWithUser,
-            // @Res() response: Response,
-            // ): Promise<Response> {
-            // const { user } = request
-            // const cookie = this.authService.getCookieWithJwtToken(user?.id)
-            // response.setHeader('Set-Cookie', cookie)
-            // user.password = undefined
-            //return response.send(user)
-            return this.authService.login(email, password)
+            const user = request.user
+            const cookie = this.authService.getCookieWithJwtToken(user.id)
+            response.setHeader('Set-Cookie', cookie)
+            user.password = undefined
+            return user
         } catch (error) {
             throw new HttpException(
                 'Wrong credentials provided',
@@ -87,7 +83,7 @@ export class AuthController {
 
     @UseGuards(JwtAuthGuard)
     @Post('log-out')
-    async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
+    async logOut(@Res() response: Response) {
         response.setHeader('Set-Cookie', this.authService.getCookieForLogOut())
         return response.sendStatus(200)
     }
